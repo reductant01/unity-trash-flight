@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -64,7 +65,17 @@ public class Player : MonoBehaviour
             // Instantiate(발사물체, 발사위치, 발사효과(Quaternion.identity는 아무런 회전없이 일직선으로 날아감))
             lastShotTime = Time.time;
         }
-        
-        
     }
+
+    /// <summary>
+        /// Sent when another object enters a trigger collider attached to this
+        /// object (2D physics only).
+        /// </summary>
+        /// <param name="other">The other Collider2D involved in this collision.</param>
+        private void OnTriggerEnter2D(Collider2D other) {
+            if (other.gameObject.tag == "Enemy") {
+                Debug.Log("Game Over");
+                Destroy(gameObject);
+            }
+        }
 }

@@ -6,6 +6,7 @@ public class Weapon : MonoBehaviour
 {
     [SerializeField]
     private float moveSpeed = 10f;
+    public float damage = 1f; // 다른 클래스에서도 사용하도록 하기위해 public으로 사용
 
     // 객체가 활성화 되는 순간 실행 
     void Start() 
