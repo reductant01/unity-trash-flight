@@ -11,7 +11,8 @@ public class Player : MonoBehaviour
     private float moveSpeed;
 
     [SerializeField]
-    private GameObject weapon;
+    private GameObject[] weapons;
+    private int weaponIndex = 0;
 
     [SerializeField]
     private Transform shootTransform; // Player 코드 아래로 받아서 shootTransform와 Player의 위치가 함께 조정될 수 있도록 함
@@ -61,8 +62,8 @@ public class Player : MonoBehaviour
         // lastShotTime = 10.06
 
         if(Time.time - lastShotTime > shootInterval) { // 발사 간격 조절
-            Instantiate(weapon, shootTransform.position, Quaternion.identity); // 게임오브젝트를 만드는 코드
-            // Instantiate(발사물체, 발사위치, 발사효과(Quaternion.identity는 아무런 회전없이 일직선으로 날아감))
+            Instantiate(weapons[weaponIndex], shootTransform.position, Quaternion.identity); // 게임오브젝트를 만드는 코드
+            // Instantiate(발사물체, 발사위치, 발사효과(Quaternion.identity는 아무런 효과 없음)), Instantiate로 객체를 등장시키고 앞으로 날아가는 것은 weapon의 코드이다
             lastShotTime = Time.time;
         }
     }
@@ -72,10 +73,21 @@ public class Player : MonoBehaviour
         /// object (2D physics only).
         /// </summary>
         /// <param name="other">The other Collider2D involved in this collision.</param>
-        private void OnTriggerEnter2D(Collider2D other) {
-            if (other.gameObject.tag == "Enemy") {
-                Debug.Log("Game Over");
-                Destroy(gameObject);
-            }
+    private void OnTriggerEnter2D(Collider2D other) {
+        if (other.gameObject.tag == "Enemy") {
+            Debug.Log("Game Over");
+            Destroy(gameObject);
+        } else if (other.gameObject.tag == "Coin") {
+            // Debug.Log("Coin + 1");
+            GameManager.instance.IncreaseCoin(); // 그냥 GameManager.IncreaseCoin();를 호출하는 것이 아니라 GameManager.instance.IncreaseCoin();의 코드를 사용함으로써 유일한 GameManager를 호출할 수 있도록 한다 
+            Destroy(other.gameObject);
         }
-}
+    }
+
+    public void Upgrade() {
+        weaponIndex += 1;
+        if (weaponIndex >= weapons.Length) {
+            weaponIndex = weapons.Length - 1; // weapons배열이 3개 밖에 없기에 weaponIndex가 3보다 크지 않도록 한다
+        }
+    }
+} 

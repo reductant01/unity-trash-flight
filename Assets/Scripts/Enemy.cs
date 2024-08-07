@@ -5,9 +5,14 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [SerializeField]
+    private GameObject coin;
+
+    [SerializeField]
     private float moveSpeed = 10f;
 
     private float minY = -7f;
+
+    [SerializeField]
     private float hp = 1f;
 
     public void SetMoveSpeed(float moveSpeed) { // public으로 만들어진것 확인, private로 쓰고 싶다면?
@@ -34,6 +39,7 @@ public class Enemy : MonoBehaviour
             hp -= weapon.damage;
             if (hp <= 0) {
                 Destroy(gameObject); // 적이 사라지게 하는 코드
+                Instantiate(coin, transform.position, Quaternion.identity); // 객체 생성 코드, coin을 등장시키고 Coin.cs 코드에 의해 코인은 움직인다
             }
             Destroy(other.gameObject); // weapon이 사라지게 하는 코드
         }
