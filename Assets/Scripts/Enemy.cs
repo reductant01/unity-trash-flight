@@ -38,6 +38,9 @@ public class Enemy : MonoBehaviour
             Weapon weapon = other.gameObject.GetComponent<Weapon>();
             hp -= weapon.damage;
             if (hp <= 0) {
+                if (gameObject.tag == "Boss") {
+                    GameManager.instance.SetGameOver();
+                }
                 Destroy(gameObject); // 적이 사라지게 하는 코드
                 Instantiate(coin, transform.position, Quaternion.identity); // 객체 생성 코드, coin을 등장시키고 Coin.cs 코드에 의해 코인은 움직인다
             }

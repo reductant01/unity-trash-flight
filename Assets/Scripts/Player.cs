@@ -45,7 +45,9 @@ public class Player : MonoBehaviour
         float toX = Mathf.Clamp(mousePos.x, -2.35f, 2.35f); // mousePos.x의 최소값과 최대값을 지정하여 화면밖으로 벗어나지 못하도록 함
         transform.position = new Vector3(toX, transform.position.y, transform.position.z); // 마우스에 따라서 x값만 변하도록 해야함 
 
-        Shoot();
+        if (GameManager.instance.isGameOver == false) {
+            Shoot(); // GameOver가 된다면 Shoot을 그만하게 하고싶음
+        }
     }
 
     void Shoot() {
@@ -74,8 +76,9 @@ public class Player : MonoBehaviour
         /// </summary>
         /// <param name="other">The other Collider2D involved in this collision.</param>
     private void OnTriggerEnter2D(Collider2D other) {
-        if (other.gameObject.tag == "Enemy") {
-            Debug.Log("Game Over");
+        if (other.gameObject.tag == "Enemy" || other.gameObject.tag == "Boss") {
+            // Debug.Log("Game Over");
+            GameManager.instance.SetGameOver(); // GameManager.instance로 호출하는거 기억!!
             Destroy(gameObject);
         } else if (other.gameObject.tag == "Coin") {
             // Debug.Log("Coin + 1");

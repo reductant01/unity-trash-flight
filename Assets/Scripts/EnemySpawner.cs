@@ -1,12 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
     [SerializeField]
     private GameObject[] enemies; 
+
+    [SerializeField]
+    private GameObject boss;
 
     private float[] arrPosX = {-2.2f, -1.1f, 0f, 1.1f, 2.2f};
 
@@ -21,6 +25,10 @@ public class EnemySpawner : MonoBehaviour
 
     void StartEnemyRoution() {
         StartCoroutine("EnemyRoution"); // Start에서 무한 반복문을 사용하면 다른 행동을 할 수 없게 되기에 StartCoroutine을 사용하여 자동으로 반복문이 실행되도록 한다
+    }
+
+    public void StopEnemyRoutine() { // 나중에 GameManager에서 호출할수 있도록 하기 위해 public으로 생성
+        StopCoroutine("EnemyRoution");
     }
 
     IEnumerator EnemyRoution() {
@@ -41,7 +49,13 @@ public class EnemySpawner : MonoBehaviour
                 moveSpeed += 2f;
             }
 
-            yield return new WaitForSeconds(spawnInterval); 
+            if (enemyIndex >= enemies.Length) {
+                SpawnBoss();
+                enemyIndex = 0;
+                moveSpeed = 5f;
+            }
+
+            yield return new WaitForSeconds(spawnInterval); // spawnInterval로 주어진 값만큼 기다리게 코드
         }
     }
 
@@ -61,4 +75,7 @@ public class EnemySpawner : MonoBehaviour
         enemy.SetMoveSpeed(moveSpeed); // public으로 쓰여진 SetMoveSpeed함수를 호출하여 moveSpeed 설정
     }
 
+    void SpawnBoss() { // position 값이 처음에 주어져있는가??
+        Instantiate(boss, transform.position, Quaternion.identity);
+    }
 }
